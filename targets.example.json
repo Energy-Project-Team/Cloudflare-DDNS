@@ -1,0 +1,17 @@
+[
+  {
+    "name": "example.com",
+    "type": "A",
+    "zone_name": "example.com",
+    "token": "your_cloudflare_api_token_here",
+    "proxied": false
+  },
+  {
+    "name": "ipv6.example.com",
+    "type": "AAAA",
+    "zone_name": "example.com",
+    "token": "your_second_cloudflare_api_token_here",
+    "proxied": false,
+    "ip_mode": "ipv6"
+  }
+]

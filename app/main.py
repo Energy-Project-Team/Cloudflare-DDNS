@@ -82,18 +82,30 @@ def parse_bool(value: Any) -> bool:
     return bool(value)
 
 
+
 def load_targets() -> list[Target]:
     raw_targets = os.getenv("CF_TARGETS_JSON", "").strip()
-    if not raw_targets:
-        raise RuntimeError("CF_TARGETS_JSON is empty or missing")
+    targets_file = os.getenv("CF_TARGETS_FILE", "").strip()
 
-    try:
-        items = json.loads(raw_targets)
-    except json.JSONDecodeError as exc:
-        raise RuntimeError(f"Failed to parse CF_TARGETS_JSON: {exc}") from exc
+    items: Any
+    if targets_file:
+        path = Path(targets_file)
+        if not path.exists():
+            raise RuntimeError(f"CF_TARGETS_FILE does not exist: {path}")
+        try:
+            items = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(f"Failed to parse CF_TARGETS_FILE JSON: {exc}") from exc
+    else:
+        if not raw_targets:
+            raise RuntimeError("Set CF_TARGETS_FILE or CF_TARGETS_JSON in .env")
+        try:
+            items = json.loads(raw_targets)
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(f"Failed to parse CF_TARGETS_JSON: {exc}") from exc
 
     if not isinstance(items, list) or not items:
-        raise RuntimeError("CF_TARGETS_JSON must be a non-empty JSON array")
+        raise RuntimeError("Targets config must be a non-empty JSON array")
 
     targets: list[Target] = []
     for i, item in enumerate(items, start=1):
@@ -346,10 +358,10 @@ def validate_config() -> int:
 
 
 def show_config() -> int:
-    load_environment()
+    env_path = load_environment()
     targets = load_targets()
     payload = {
-        "env_path": str(DEFAULT_ENV_PATH if DEFAULT_ENV_PATH.exists() else Path(".env").resolve()),
+        "env_path": str(env_path) if env_path else None,
         "ip_mode": get_global_ip_mode(),
         "update_interval": get_update_interval(),
         "log_level": os.getenv("LOG_LEVEL", "INFO"),
@@ -477,7 +489,7 @@ def main() -> int:
     if command == "stop":
         return call_systemctl("stop")
     if command == "version":
-        print("cloudflare-ddns 2.0.0")
+        print("cloudflare-ddns 1.0.0")
         return 0
 
     parser.print_help()
