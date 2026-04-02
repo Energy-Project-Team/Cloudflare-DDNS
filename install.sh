@@ -16,7 +16,6 @@ sudo cp -r "${REPO_DIR}/app" "${INSTALL_DIR}/"
 sudo cp "${REPO_DIR}/requirements.txt" "${INSTALL_DIR}/"
 sudo cp "${REPO_DIR}/README.md" "${INSTALL_DIR}/"
 sudo cp "${REPO_DIR}/README.ru.md" "${INSTALL_DIR}/"
-sudo cp "${REPO_DIR}/README.en.md" "${INSTALL_DIR}/"
 sudo cp "${REPO_DIR}/LICENSE" "${INSTALL_DIR}/"
 sudo cp "${REPO_DIR}/scripts/cloudflare-ddns" "/usr/local/bin/cloudflare-ddns"
 if [[ ! -f "${INSTALL_DIR}/targets.json" ]]; then
