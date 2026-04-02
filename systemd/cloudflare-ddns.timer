@@ -1,0 +1,10 @@
+[Unit]
+Description=Start Cloudflare DDNS service on boot
+
+[Timer]
+OnBootSec=15s
+Unit=cloudflare-ddns.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target

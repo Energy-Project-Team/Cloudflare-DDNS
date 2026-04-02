@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+APP_DIR="/opt/cloudflare-ddns"
+exec "${APP_DIR}/.venv/bin/python" "${APP_DIR}/app/main.py" "$@"
